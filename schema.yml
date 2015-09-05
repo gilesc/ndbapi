@@ -1,0 +1,282 @@
+---
+metadata:
+    order: 
+        - structural_content
+        - experimental_information
+        - experimental_details
+        - citation_information
+        - RNA_3D_interaction
+        - RNA_3D_motif
+        - RNA_nonredundant_list
+        - sequence
+        - nucleic_acid_modification
+        - binding_type
+        - structural_conformation_type
+
+structural_content:
+    prefix: biocn
+
+    elements:
+        - id: dna
+          key: DNA
+          type: radio
+
+        - id: rna
+          key: RNA
+          type: radio
+
+        - id: hyb
+          key: hybrid
+          type: radio
+
+        - id: pro
+          key: protein
+          type: radio
+
+        - id: lig
+          key: ligand
+          type: radio
+
+        - id: lid
+          key: ligand_id
+          type: text
+
+        - id: drg
+          key: drug
+          type: radio
+
+        - id: dbt
+          key: binding_type
+          type: mchoice
+
+experimental_information:
+    prefix: etype
+
+    elements:
+        - id: etype_cry
+          key: determined_by_crystallography
+          type: radio
+
+        - id: etype_sfc
+          key: structure_factors_deposited
+          type: radio
+
+        - id: etype_nmr
+          key: determined_by_nmr
+          type: radio
+
+        - id: etype_nra
+          key: nmr_restraints_deposited
+          type: radio
+
+experimental_details:
+    prefix: detal
+
+    elements:
+        - id: group
+          key: space_group
+          type: choice
+
+        - id: aa
+          key: alpha
+          type: nop
+
+        - id: la
+          key: a
+          type: nop
+
+        - id: res
+          key: resolution
+          type: text
+
+        - id: ab
+          key: beta
+          type: nop
+
+        - id: lb
+          key: b
+          type: nop
+
+        - id: rfc
+          key: r_factor
+          type: choice
+        
+        - id: ag
+          key: gamma
+          type: nop
+
+        - id: lc
+          key: c
+          type: nop
+
+citation_information:
+    prefix: citat
+
+    elements:
+        - id: ndbid
+          key: NDB_ID
+          type: text
+          has_bitop: false
+          global: true
+
+        - id: pdbid
+          key: PDB_ID
+          type: text
+          has_bitop: false
+          global: true
+
+        - id: authr
+          key: author
+          type: text
+          global: true
+
+        - id: ann
+          key: publication_year
+          type: text
+
+        - id: rel
+          key: released_since
+          type: choice
+
+RNA_3D_interaction:
+    prefix: null
+
+    elements:
+        - id: bp_int
+          key: base_pair
+          type: choice
+          global: true
+
+        - id: bph_int
+          key: base_phosphate
+          type: choice
+          global: true
+
+        - id: bs_int
+          key: base_stack
+          type: choice 
+          global: true
+
+        - id: bp_f_int
+          key: base_pair_relative_frequency
+          type: relative_frequency
+          global: true
+
+        - id: bph_f_int
+          key: base_phosphate_relative_frequency
+          type: relative_frequency
+          global: true
+
+        - id: bs_f_int
+          key: base_stack_relative_frequency
+          type: relative_frequency
+          global: true
+
+RNA_3D_motif:
+    prefix: null
+
+    elements:
+        - id: int_motif
+          key: internal_loop_motif
+          type: mchoice
+          global: true
+          clause_bitop: OR
+
+        - id: hairpin_motif
+          key: hairpin_motif
+          type: mchoice
+          global: true
+          clause_bitop: OR
+
+RNA_nonredundant_list:
+    prefix: null
+
+    elements:
+        - id: nr_list
+          key: resolution_cutoff
+          global: true
+          type: choice
+
+sequence:
+    prefix: null
+
+    elements:
+        - id: seqnc
+          key: pattern
+          global: true
+          type: text
+
+        - id: ln
+          key: length
+          bitop_id: c_seqln
+          global: true
+          type: minmax
+
+nucleic_acid_modification:
+    prefix: namod
+
+    elements:
+        - id: bas
+          key: has_base_modifiers
+          type: radio
+
+        - id: sgr
+          key: has_sugar_modifiers
+          type: radio
+
+        - id: phs
+          key: has_phosphate_modifers
+          type: radio
+
+binding_type:
+    prefix: prbmd
+
+    elements:
+        - id: enz
+          key: enzyme
+          type: radio_na
+
+        - id: efn
+          key: enzyme_function
+          type: mchoice
+        
+        - id: reg
+          key: regulatory
+          type: radio_na
+         
+        - id: rfn
+          key: regulatory_function
+          type: mchoice
+
+        - id: str
+          key: structural
+          type: radio_na
+
+        - id: sfn
+          key: structural_function
+          type: mchoice
+
+        - id: oth
+          key: other
+          type: radio_na
+
+        - id: ofn
+          key: other_function
+          type: mchoice
+
+structural_conformation_type:
+    prefix: nasct
+
+    elements:
+        - id: des
+          key: strand_description
+          type: mchoice
+          clause_bitop: OR
+
+        - id: ftr
+          key: nucleic_acid_features
+          type: mchoice
+
+        - id: typ
+          key: conformation_type
+          type: choice
