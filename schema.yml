@@ -53,19 +53,19 @@ experimental_information:
     prefix: etype
 
     elements:
-        - id: etype_cry
+        - id: cry
           key: determined_by_crystallography
           type: radio
 
-        - id: etype_sfc
+        - id: sfc
           key: structure_factors_deposited
           type: radio
 
-        - id: etype_nmr
+        - id: nmr
           key: determined_by_nmr
           type: radio
 
-        - id: etype_nra
+        - id: nra
           key: nmr_restraints_deposited
           type: radio
 
@@ -73,7 +73,7 @@ experimental_details:
     prefix: detal
 
     elements:
-        - id: group
+        - id: grp
           key: space_group
           type: choice
 
@@ -157,17 +157,17 @@ RNA_3D_interaction:
           type: choice 
           global: true
 
-        - id: bp_f_int
+        - id: bp_f
           key: base_pair_relative_frequency
           type: relative_frequency
           global: true
 
-        - id: bph_f_int
+        - id: bph_f
           key: base_phosphate_relative_frequency
           type: relative_frequency
           global: true
 
-        - id: bs_f_int
+        - id: bs_f
           key: base_stack_relative_frequency
           type: relative_frequency
           global: true

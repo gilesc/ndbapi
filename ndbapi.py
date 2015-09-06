@@ -10,6 +10,8 @@ from itertools import groupby
 
 import yaml
 import pandas as pd
+import lxml.html
+import requests
 
 # enums
 
@@ -81,7 +83,7 @@ def search(**kwargs):
 Category = namedtuple("Category", "key,prefix")
 
 class Element(object):
-    def __init__(self, category, e):
+    def __init__(self, category, e, cfn):
         self._category = category
         self._key = ".".join([category.key, e["key"]])
         self._id = e["id"]
@@ -90,6 +92,8 @@ class Element(object):
         self._has_bitop = e.get("has_bitop", True)
         # only relevant to mchoice
         self._clause_bitop = e.get("clause_bitop", True)
+
+        self._cfn = cfn
 
     def __repr__(self):
         return "<Element t={} k={}>".format(self._type, self._key)
@@ -129,7 +133,34 @@ class Element(object):
         return o
 
     def _transform_relative_frequency(self, sp):
-        pass
+        o = {}
+        assert sp["bitop"] in ("AND", "OR")
+        assert sp["nop"] in ("gtEq", "ltEq", "eq")
+        o["c_{}_count".format(self._id)] = sp["bitop"]
+        o["q_{}_int".format(self._id)] = sp["choice"]
+        o["q_{}_op".format(self._id)] = sp["nop"]
+        o["q_{}_count".format(self._id)] = str(sp["cutoff"])
+        return o
+
+    def _transform_nop(self, sp):
+        assert sp["bitop"] in ("AND", "OR")
+        assert sp["nop"] in ("gtEq", "ltEq", "eq")
+        o = {}
+        o["c_{}_{}n{}".format(self._category.prefix, self._id[0], self._id[1])] = sp["bitop"]
+        o["q_{}_v{}".format(self._category.prefix, self._id)] = str(sp["value"])
+        o["q_{}_o{}".format(self._category.prefix, self._id)] = sp["nop"]
+        return o
+
+    def _transform_choice(self, sp):
+        rid = self._id if self._is_global else "{}_{}".format(self._category.prefix, self._id)
+        choices = self._cfn("q_{}".format(rid))
+        print(rid)
+        print(choices)
+        assert sp["choice"] in choices
+        o = {}
+        o["q_{}".format(rid)] = choices[sp["choice"]]
+        o["c_{}".format(rid)] = sp["bitop"]
+        return o
 
     def transform(self, params):
         """
@@ -137,11 +168,16 @@ class Element(object):
         Also validate the parameters (any of them may have been edited by the user).
         """
         sp = dict([(k.split(".")[-1],v) for k,v in params.items()])
+
         if self._type == "relative_frequency":
             return self._transform_relative_frequency(sp)
+        elif self._type == "nop":
+            return self._transform_nop(sp)
+        elif self._type == "choice":
+            return self._transform_choice(sp)
 
         o = {}
-        rid = self._id if self._is_global else "{}_{}".format(self.category.prefix, self._id)
+        rid = self._id if self._is_global else "{}_{}".format(self._category.prefix, self._id)
 
         if "bitop" in sp:
             v = sp["bitop"]
@@ -155,13 +191,17 @@ class Element(object):
             else:
                 assert v in ("RNA", "DNA", "EITHER")
             o["q_{}".format(rid)] = v
-        elif self._type in ("text", "nop"):
+        elif self._type == "text":
             o["q_{}".format(rid)] = str(sp["value"])
+
+        return o
 
 
 from pprint import pprint
 
 class NDBAPI(object):
+    URL = "http://ndbserver.rutgers.edu/ndbmodule/search/integrated.html"
+
     def __init__(self):
         self._elements = {}
         self._defaults = OrderedDict()
@@ -173,9 +213,21 @@ class NDBAPI(object):
                 category_data = tree[category_key]
                 category = Category(category_key, category_data["prefix"])
                 for edata in category_data["elements"]:
-                    e = Element(category, edata)
+                    e = Element(category, edata, self._get_choices)
                     self._elements[e._key] = e
                     self._defaults.update(e.parameters)
+
+        page = requests.get(self.URL)
+        self._ptree = lxml.html.fromstring(page.text)
+
+    def _get_choices(self, id):
+        names = self._ptree.xpath("//select[@name='{}']/option/text()".format(id))
+        values = self._ptree.xpath("//select[@name='{}']/option/@value".format(id))
+        print(names)
+        if len(values) > 1:
+            return OrderedDict(zip(names, values))
+        else:
+            return OrderedDict([("","")] + list(zip(names[1:], names[1:])))
 
     def query(self, params):
         assert isinstance(params, dict)
@@ -188,10 +240,14 @@ class NDBAPI(object):
         params = np
 
         for ek, keys in groupby(params.keys(), lambda k: ".".join(k.split(".")[:-1])):
+            e = self._elements[ek]
             lparams = dict([(k,params[k]) for k in keys])
-            print(ek, lparams)
+            print(e.transform(lparams))
+            #print(ek, lparams)
 
 if __name__ == "__main__":
     api = NDBAPI()
+    #print(api._get_choices("q_citat_rel"))
     rs = api.query({})
-    print(rs)
+    #print(rs)
+    #print(rs)
