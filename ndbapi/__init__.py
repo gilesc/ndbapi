@@ -50,6 +50,8 @@ class Element(object):
             return
         elif opt in ("choice", "choices"):
             return tuple(self._choices.keys())
+        elif opt in ("nop"):
+            return ("gtEq", "ltEq", "eq")
 
     @property
     def parameters(self):
@@ -218,7 +220,7 @@ class Client(object):
             n = opt.text or ""
             v = opt.attrib.get("value")
             v = n if v is None else v
-            names.append(n)
+            names.append(n.strip())
             values.append(v)
             if opt.attrib.get("selected") is not None:
                 default = n
@@ -290,10 +292,13 @@ class Client(object):
     def print_options(self, handle=sys.stdout):
         o = OrderedDict()
         for key in self._defaults.keys():
-            o[key] = self.options(key)
-
-        printer = pprint.PrettyPrinter(stream=handle)
-        printer.pprint(o)
+            print(key, file=handle)
+            opts = self.options(key)
+            if opts is None:
+                print("\t-", "(ANY STRING)", file=handle)
+            else:
+                for opt in opts:
+                    print("\t-", "'{}'".format(opt), file=handle)
 
     def query(self, params):
         oparams = self._transform_parameters(params)
