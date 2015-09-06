@@ -242,7 +242,7 @@ class Client(object):
             e = self._elements[ek]
             lparams = dict([(k,params[k]) for k in keys])
             oparams.update(e.transform(lparams))
-        pprint.pprint(oparams)
+        #pprint.pprint(oparams)
         return oparams
 
     def _parse_result(self, handle):

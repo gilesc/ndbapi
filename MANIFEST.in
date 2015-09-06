@@ -1,1 +1,1 @@
-include schema.yml
+include ndbapi/schema.yml

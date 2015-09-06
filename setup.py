@@ -14,7 +14,7 @@ setup(
     author="Cory Giles",
     author_email="mail@corygil.es",
     include_package_data=True,
-    py_modules=["ndbapi.py"],
+    packages=find_packages(),
     url="http://github.com/gilesc/ndbapi.git",
     install_requires=requirements
 )
