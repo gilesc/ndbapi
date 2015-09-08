@@ -181,6 +181,9 @@ class Result(object):
     def __len__(self):
         return self.data.shape[0]
 
+    def __repr__(self):
+        return "<ndbapi.Result with {} entries>".format(len(self))
+
     def save(self, path, sep="\t"):
         with open(path, "wt") as h:
             h.write("# date: {}\n".format(self._date))
@@ -307,22 +310,3 @@ class Client(object):
         with io.StringIO(rq.text) as h:
             data = self._parse_result(h)
             return Result(params, data)
-
-TESTS = [
-        {"citation_information.PDB_ID.value": "4WLS"}
-]
-
-def test():
-    api = Client()
-    #api.print_options()
-    #for opt in api._defaults.keys():
-    #    print(opt, api.options(opt))
-    #with open("/home/gilesc/dsRNAxray4sept2015.txt") as h:
-    #    rs = api._parse_result(h)
-    #    print(rs.loc[:,["Title", "Authors"]].head())
-
-    #print(api._get_choices("q_citat_rel"))
-    rs = api.query(TESTS[0])
-
-if __name__ == "__main__":
-    test()
