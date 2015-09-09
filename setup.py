@@ -9,12 +9,22 @@ requirements = [str(r.req) for r in parse_requirements(requirements, session=Pip
 
 setup(
     name="ndbapi",
-    version="0.1",
+    version="0.1.1",
     description="API for Rutgers Nucleic Acid Database",
     author="Cory Giles",
     author_email="mail@corygil.es",
     include_package_data=True,
     packages=find_packages(),
     url="http://github.com/gilesc/ndbapi.git",
-    install_requires=requirements
+    install_requires=requirements,
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+        "Operating System :: POSIX",
+        "Operating System :: MacOS",
+        "Operating System :: Microsoft :: Windows",
+        "Topic :: Scientific/Engineering :: Bio-Informatics",
+        "Topic :: Software Development :: Libraries"
+    ]
 )

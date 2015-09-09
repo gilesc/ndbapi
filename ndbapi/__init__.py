@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from collections import namedtuple, OrderedDict
 from itertools import groupby
 import datetime
@@ -187,6 +189,7 @@ class Result(object):
     def save(self, path, sep="\t"):
         with open(path, "wt") as h:
             h.write("# date: {}\n".format(self._date))
+            h.write("# result count: {}\n".format(len(self)))
             for k,v in self.params.items():
                 h.write("## {}: {}\n".format(k, repr(v)))
             self.data.to_csv(h, sep=sep, index=False)

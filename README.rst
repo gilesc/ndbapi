@@ -8,11 +8,11 @@ DB (http://ndbserver.rutgers.edu/ndbmodule/search/integrated.html).
 Installation
 ============
 
-NOTE: ndbapi requires Python 3.
+ndbapi requires Python 2.6+ or any Python 3 (any version).
 
 .. code-block:: bash
 
-    $ pip3 install --user git+https://github.com/gilesc/ndbapi.git
+    $ pip install --user git+https://github.com/gilesc/ndbapi.git
 
 Usage
 =====
@@ -62,3 +62,13 @@ valid values will be allowed. Here are a few:
 - `choice` : the choice from a single-choice selection box
 - `choices` : a list of choices from a multiple-choice selection box
 - `minimum`, `maximum`, and `cutoff` - numeric fields (accepts strings or floats)
+
+Bugs
+====
+
+Please use the Github issue tracker.
+
+License
+=======
+
+AGPL3+
